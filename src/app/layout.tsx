@@ -24,10 +24,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}>
+        <header className="bg-blue-600 text-white p-4">
+          <h1 className="text-2xl">Inventory Management</h1>
+        </header>
+        <main className="flex-grow p-4">{children}</main>
+        <footer className="bg-blue-600 text-white text-center py-4 mt-auto">
+          &copy; 2024 My Inventory System
+        </footer>
       </body>
     </html>
   );
