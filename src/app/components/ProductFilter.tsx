@@ -1,5 +1,5 @@
 import React from "react";
-import { Category } from "../../types/categoryModel";
+import { Category } from "../../types/categoryType";
 
 type ProductFilterProps = {
   selectedCategory: string;

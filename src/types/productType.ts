@@ -1,4 +1,4 @@
-import { Category } from "./categoryModel";
+import { Category } from "./categoryType";
 
 // Definisi model data product
 export interface Product {

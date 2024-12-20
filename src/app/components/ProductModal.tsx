@@ -2,14 +2,18 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Dialog } from "@headlessui/react";
-import { Product } from "../../types/productModel";
-import { Category } from "@/types/categoryModel";
+import { Product } from "../../types/productType";
+import { Category } from "@/types/categoryType";
 import { useNumberFormat } from "@react-input/number-format";
 
 interface ProductModalProps {
     closeModal: () => void;
     saveProduct: (product : Product) => void;
     product?: Product | null; // untuk editing
+}
+
+const formatDate = (date: string) => {
+    return new Date(date).toISOString().split("T")[0];
 }
 
 const ProductModal = ({
@@ -36,8 +40,16 @@ const ProductModal = ({
         category: product.category,
         quantity: product.quantity,
         price: product.price,
-        dateAdded: product.dateAdded,
+        dateAdded: formatDate(product.dateAdded),
       });
+
+      console.log(product);
+    }
+    else {
+      setFormData((prev) => ({
+        ...prev,
+        id: parseInt(Date.now().toString()), // Generate ID
+      }));
     }
   }, [product]);
 
@@ -55,7 +67,7 @@ const ProductModal = ({
     locales: "id-ID",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Validasi data
@@ -81,14 +93,39 @@ const ProductModal = ({
       formData.price = price;
     }
 
-    const updatedProduct = {
-        ...formData,
-        id: product ? product.id : Date.now(), // Saat mengedit, gunakan ID produk yang ada
-      };
-  
-      // Panggil fungsi saveProduct yang diturunkan dari komponen induk
-      saveProduct(updatedProduct);
+    try {
+      let response;
+      if (product) {
+        // Khusus update
+        response = await fetch(`/api/products/update/${product.id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        });
+      } else {
+        // Khusus tambah produk baru
+        response = await fetch("/api/products/create", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        });
+      }
+
+      if (!response.ok) {
+        throw new Error("Failed to save product.");
+      }
+
+      const savedProduct = await response.json();
+      saveProduct(savedProduct);
       closeModal();
+    } catch (error) {
+      console.error("Error saving product:", error);
+      alert("Terjadi kesalahan saat menyimpan produk.");
+    }
   };
 
   return (
@@ -97,6 +134,19 @@ const ProductModal = ({
         <Dialog.Panel className="bg-white p-6 rounded-lg shadow-lg w-96">
           <h2 className="text-center text-xl font-bold mb-4">{product ? "Edit Barang" : "Tambah Barang"}</h2>
           <form onSubmit={handleSubmit}>
+            {!product && (
+              <div className="mb-4 hidden">
+                <label className="block mb-2">ID</label>
+                <input
+                  type="text"
+                  name="id"
+                  value={formData.id}
+                  onChange={handleChange}
+                  className="border px-3 py-2 w-full"
+                  disabled
+                />
+              </div>
+            )}
             <div className="mb-4">
               <label htmlFor="name" className="block text-sm font-medium">
                 Nama Barang

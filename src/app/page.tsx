@@ -1,10 +1,10 @@
 // halaman utama
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import ProductModal from "./components/ProductModal";
 import ProductTable from "../app/components/ProductTable";
 import ProductFilter from "../app/components/ProductFilter";
-import { Product } from "../types/productModel";
+import { Product } from "../types/productType";
 
 const InventoryPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -13,30 +13,83 @@ const InventoryPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
 
-  const addProduct = (newProduct: Product) => {
-    setProducts((prevProducts) => [...prevProducts, newProduct]);
-  };
+  const fetchProducts = useCallback(async () => {
+    try {
+      const queryParams = new URLSearchParams();
+      if (searchQuery) {
+        queryParams.append("searchQuery", searchQuery);
+      }
+      
+      if (selectedCategory) {
+        queryParams.append("selectedCategory", selectedCategory);
+      }
 
-  const updateProduct = (updatedProduct: Product) => {
-    setProducts((prevProducts) =>
-      prevProducts.map((product) => (product.id === updatedProduct.id ? updatedProduct : product))
-    );
-  }
+      const response = await fetch(`/api/products?${queryParams.toString()}`);
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        setProducts(data);
+      } else {
+        setProducts([]);  // fallback to empty array if data is not an array
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      setProducts([]);  // fallback to empty array on error
+    }
+  }, [searchQuery, selectedCategory]);
+  
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]); // it's re-run time, ketika searchQuery atau selectedCategory berubah
+
+  const handleSaveProduct = async (product: Product) => {
+    if (product.id) {
+      setProducts((prevProducts) => prevProducts.map((p) => (p.id === product.id ? product : p)));
+    }
+    else {
+      setProducts((prevProducts) => [...prevProducts, product]);
+    }
+
+    await fetchProducts();
+  };
 
   const handleEditProduct = (product: Product) => {
     setEditingProduct(product);
     setIsModalOpen(true);
   };
 
-  const deleteProduct = (id: number) => {
-    setProducts((prevProducts) => prevProducts.filter((product) => product.id !== id));
+  const deleteProduct = async (id: number) => {
+    try {
+      await fetch(`/api/products/delete/${id}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+      setProducts((prevProducts) => prevProducts.filter((product) => product.id !== id));
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
+
+    await fetchProducts();
   };
 
-  const filteredProducts = products.filter((product) => {
-    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory ? product.category === selectedCategory : true;
-    return matchesSearch && matchesCategory;
-  });
+  const deleteBulkProducts = async (ids: number[]) => {
+    try {
+      const response = await fetch("/api/products/delete", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log(data.message);
+        setProducts((prevProducts) => prevProducts.filter((product) => !ids.includes(product.id)));
+      }
+    } catch (error) {
+      console.error("Error deleting bulk products:", error);
+    }
+
+    await fetchProducts();
+  };
 
   return (
     <div className="container mx-auto p-4">
@@ -63,9 +116,10 @@ const InventoryPage = () => {
         </div>
 
         <ProductTable
-          products={filteredProducts}
+          products={products} // langsung pakai filter dari API
           updateProduct={handleEditProduct} // bawa handleEditProduct untuk updateProduct
           deleteProduct={deleteProduct}
+          deleteBulkProducts={deleteBulkProducts}
         />
       </div>
 
@@ -73,7 +127,7 @@ const InventoryPage = () => {
       {isModalOpen && (
         <ProductModal
           closeModal={() => setIsModalOpen(false)}
-          saveProduct={editingProduct ? updateProduct : addProduct} // update kalau edit, add kalau tambah produk baru
+          saveProduct={handleSaveProduct} // update kalau edit, add kalau tambah produk baru
           product={editingProduct}
         />
       )}
