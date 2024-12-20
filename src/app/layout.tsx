@@ -20,8 +20,8 @@ export default function RootLayout({
       <body className={`${manrope.className} antialiased flex flex-col min-h-screen`}>
         <header className="bg-blue-100 text-grey-800 p-4 border-b-2 border-blue-200">
           <div className="inline-flex items-center space-x-2">
-            <span className="inline"><Icons.ArchiveBox className="size-6 mr-1 text-blue-900"/></span>
-            <h1 className="text-2xl font-bold text-blue-900">Inventory Management System</h1>
+            <span className="inline"><Icons.ArchiveBox className="size-12 sm:size-6 mr-1 text-blue-900"/></span>
+            <h1 className="hidden lg:block text-2xl font-bold text-blue-900">Inventory Management System</h1>
           </div>
         </header>
         <main className="flex-grow p-4">{children}</main>

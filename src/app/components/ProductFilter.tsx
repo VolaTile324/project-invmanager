@@ -21,7 +21,7 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
         placeholder="Cari produk..."
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        className="p-2 border border-gray-300 rounded-md
+        className="p-2 border border-gray-300 rounded-md w-full sm:w-72
         hover:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all duration-200"
       />
       <select

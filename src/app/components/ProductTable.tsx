@@ -89,90 +89,97 @@ const ProductTable = ({
 
   return (
     <div>
-      <div className="mb-4 space-x-4">
-        { products.length > 0 && (
-            <button
+      <div className="mb-4 space-y-4 sm:space-x-4 sm:space-y-0 sm:flex sm:justify-start">
+          <button
+            disabled={products.length === 0}
             onClick={handleExportCSV}
-            className="bg-green-500 text-white px-4 py-2 rounded-md 
-            hover:bg-green-600 transition-all duration-200"
+            className={`bg-green-500 text-white px-4 py-2 rounded-md 
+              hover:bg-green-600 transition-all duration-200 w-full sm:w-auto`}
+            style={{ visibility: products.length > 0 ? "visible" : "hidden" }}
             >
             Export File CSV
-            </button>
-        )}
+          </button>
         <button
           disabled={selectedProducts.length === 0}
           onClick={() => openDeleteModal(true)}
           className={`bg-red-500 text-white px-4 py-2 rounded-md 
-            hover:bg-red-600 transition-all duration-200`}
+            hover:bg-red-600 transition-all duration-200 w-full sm:w-auto`}
             style={{ visibility: selectedProducts.length > 0 ? "visible" : "hidden" }}
         >
           Hapus Terpilih
         </button>
       </div>
 
-      <table className="min-w-full table-auto border-collapse border-y border-gray-200">
-        <thead>
-          <tr>
-            <th className="px-4 py-2 border-b">
-              <input
-                type="checkbox"
-                onChange={toggleSelectAll}
-                checked={selectedProducts.length === products.length}
-              />
-            </th>
-            <th className="w-80 px-4 py-2 border-b text-left">Nama Barang</th>
-            <th className="px-4 py-2 border-b text-left">Kategori</th>
-            <th className="px-4 py-2 border-b text-left">Jumlah Barang</th>
-            <th className="px-4 py-2 border-b text-left">Harga Total</th>
-            <th className="px-4 py-2 border-b text-left">Tanggal Masuk</th>
-            <th className="w-32 px-4 py-2 border-b text-left">Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          {(Array.isArray(products) ? products : []).map((product, index) => (
-            <tr key={product.id} className={`${index % 2 === 0 ? "bg-gray-50" : "bg-white"} hover:bg-gray-100`}>
-              <td className="px-4 py-2 border-b text-center">
-                <input
-                  type="checkbox"
-                  checked={selectedProducts.includes(product.id)}
-                  onChange={() => toggleSelectProduct(product.id)}
-                />
-              </td>
-              <td className="px-4 py-2 border-b">{product.name}</td>
-              <td className="px-4 py-2 border-b">{product.category}</td>
-              <td className="px-4 py-2 border-b">{product.quantity}</td>
-              <td className="px-4 py-2 border-b">
-                {formatCurrency(product.price * product.quantity)}
-              </td>
-              <td className="px-4 py-2 border-b">{formatDate(product.dateAdded)}</td>
-              <td className="px-4 py-2 border-b space-x-2">
-                <button
-                  disabled={isBulkSelectionActive}
-                  onClick={() => updateProduct(product)}
-                  className={`w-8 h-8 bg-yellow-500 text-white px-2 py-1 rounded-md ${
-                    isBulkSelectionActive
-                      ? "opacity-50 cursor-not-allowed"
-                      : "hover:bg-yellow-600"
-                  } transition-all duration-200`}
-                >
-                  <Icons.PencilSquare />
-                </button>
-                <button
-                  disabled={isBulkSelectionActive}
-                  onClick={() => openDeleteModal(false, product.id)}
-                  className={`w-8 h-8 bg-red-500 text-white px-2 py-1 rounded-md ${
-                    isBulkSelectionActive
-                      ? "opacity-50 cursor-not-allowed"
-                      : "hover:bg-red-600"
-                  } transition-all duration-200`}
-                >
-                  <Icons.Trash />
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {products.length === 0 ? (
+        <p className="text-center text-gray-500">Tidak ada barang yang ditemukan.</p>
+      )
+      : (
+        <div className="overflow-x-auto">
+          <table className="min-w-full table-auto border-collapse border-y border-gray-200">
+            <thead>
+              <tr>
+                <th className="px-4 py-2 border-b">
+                  <input
+                    type="checkbox"
+                    onChange={toggleSelectAll}
+                    checked={selectedProducts.length === products.length}
+                  />
+                </th>
+                <th className="w-80 px-4 py-2 border-b text-sm sm:text-base text-left">Nama Barang</th>
+                <th className="px-4 py-2 border-b text-sm sm:text-base text-left">Kategori</th>
+                <th className="px-4 py-2 border-b text-sm sm:text-base text-left">Jumlah Barang</th>
+                <th className="px-4 py-2 border-b text-sm sm:text-base text-left">Harga Total</th>
+                <th className="px-4 py-2 border-b text-sm sm:text-base text-left">Tanggal Masuk</th>
+                <th className="w-32 px-4 py-2 border-b text-sm sm:text-base text-center sm:text-left">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              {(Array.isArray(products) ? products : []).map((product, index) => (
+                <tr key={product.id} className={`${index % 2 === 0 ? "bg-gray-50" : "bg-white"} hover:bg-gray-100`}>
+                  <td className="px-4 py-2 border-b text-center">
+                    <input
+                      type="checkbox"
+                      checked={selectedProducts.includes(product.id)}
+                      onChange={() => toggleSelectProduct(product.id)}
+                    />
+                  </td>
+                  <td className="px-4 py-2 border-b text-sm sm:text-base">{product.name}</td>
+                  <td className="px-4 py-2 border-b text-sm sm:text-base">{product.category}</td>
+                  <td className="px-4 py-2 border-b text-sm sm:text-base">{product.quantity}</td>
+                  <td className="px-4 py-2 border-b text-sm sm:text-base">
+                    {formatCurrency(product.price * product.quantity)}
+                  </td>
+                  <td className="px-4 py-2 border-b text-sm sm:text-base">{formatDate(product.dateAdded)}</td>
+                  <td className="px-4 py-2 border-b space-x-0 lg:space-x-2">
+                    <button
+                      disabled={isBulkSelectionActive}
+                      onClick={() => updateProduct(product)}
+                      className={`w-10 h-10 sm:w-8 sm:h-8 bg-yellow-500 text-white px-2 py-1 rounded-md ${
+                        isBulkSelectionActive
+                          ? "opacity-50 cursor-not-allowed"
+                          : "hover:bg-yellow-600"
+                      } transition-all duration-200`}
+                    >
+                      <Icons.PencilSquare />
+                    </button>
+                    <button
+                      disabled={isBulkSelectionActive}
+                      onClick={() => openDeleteModal(false, product.id)}
+                      className={`w-10 h-10 sm:w-8 sm:h-8 bg-red-500 text-white px-2 py-1 rounded-md ${
+                        isBulkSelectionActive
+                          ? "opacity-50 cursor-not-allowed"
+                          : "hover:bg-red-600"
+                      } transition-all duration-200`}
+                    >
+                      <Icons.Trash />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       {/* Bagian Delete Modal */}
       {isDeleteModalOpen && (

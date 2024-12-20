@@ -1,10 +1,11 @@
 // halaman utama
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
+import { Product } from "../types/productType";
 import ProductModal from "./components/ProductModal";
 import ProductTable from "../app/components/ProductTable";
 import ProductFilter from "../app/components/ProductFilter";
-import { Product } from "../types/productType";
+import InventoryStats from "./components/InventoryStats";
 
 const InventoryPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -12,6 +13,7 @@ const InventoryPage = () => {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [stats, setStats] = useState({ totalToday: 0, totalAllTime: 0 });
 
   const fetchProducts = useCallback(async () => {
     try {
@@ -24,13 +26,18 @@ const InventoryPage = () => {
         queryParams.append("selectedCategory", selectedCategory);
       }
 
-      const response = await fetch(`/api/products?${queryParams.toString()}`);
-      const data = await response.json();
+      const productResponse = await fetch(`/api/products?${queryParams.toString()}`);
+      const data = await productResponse.json();
       if (Array.isArray(data)) {
         setProducts(data);
       } else {
         setProducts([]);  // fallback to empty array if data is not an array
       }
+
+      const statResponse = await fetch("/api/products/stats");
+      const statData = await statResponse.json();
+      setStats(statData);
+
     } catch (error) {
       console.error("Error fetching products:", error);
       setProducts([]);  // fallback to empty array on error
@@ -93,9 +100,9 @@ const InventoryPage = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h2 className="text-center text-xl font-bold border-b pb-2">Daftar Inventaris</h2>
+      <h2 className="text-center text-l sm:text-xl font-bold border-b pb-2">Daftar Inventaris</h2>
       <div className="mt-4">
-        <div className= "flex justify-between items-center">
+        <div className= "flex flex-col sm:flex-row sm:justify-between sm:items-center border-b mb-4">
           <button
             onClick={() => {
               setEditingProduct(null);
@@ -131,6 +138,8 @@ const InventoryPage = () => {
           product={editingProduct}
         />
       )}
+
+      <InventoryStats totalToday={stats.totalToday} totalAllTime={stats.totalAllTime} />
     </div>
   );
 };
