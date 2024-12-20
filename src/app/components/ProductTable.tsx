@@ -93,8 +93,8 @@ const ProductTable = ({
           <button
             disabled={products.length === 0}
             onClick={handleExportCSV}
-            className={`bg-green-500 text-white px-4 py-2 rounded-md 
-              hover:bg-green-600 transition-all duration-200 w-full sm:w-auto`}
+            className={`bg-green-500 dark:bg-green-700 text-white px-4 py-2 rounded-md 
+              hover:bg-green-600 dark:hover:bg-green-800 transition-all duration-200 w-full sm:w-auto`}
             style={{ visibility: products.length > 0 ? "visible" : "hidden" }}
             >
             Export File CSV
@@ -102,8 +102,8 @@ const ProductTable = ({
         <button
           disabled={selectedProducts.length === 0}
           onClick={() => openDeleteModal(true)}
-          className={`bg-red-500 text-white px-4 py-2 rounded-md 
-            hover:bg-red-600 transition-all duration-200 w-full sm:w-auto`}
+          className={`bg-red-500 dark:bg-red-600 text-white px-4 py-2 rounded-md 
+            hover:bg-red-600 dark:hover:bg-red-700 transition-all duration-200 w-full sm:w-auto`}
             style={{ visibility: selectedProducts.length > 0 ? "visible" : "hidden" }}
         >
           Hapus Terpilih
@@ -115,49 +115,51 @@ const ProductTable = ({
       )
       : (
         <div className="overflow-x-auto">
-          <table className="min-w-full table-auto border-collapse border-y border-gray-200">
+          <table className="min-w-full table-auto border-collapse border-y border-gray-200 dark:border-gray-400">
             <thead>
               <tr>
-                <th className="px-4 py-2 border-b">
+                <th className="px-4 py-2 border-b dark:border-gray-400">
                   <input
                     type="checkbox"
                     onChange={toggleSelectAll}
                     checked={selectedProducts.length === products.length}
                   />
                 </th>
-                <th className="w-80 px-4 py-2 border-b text-sm sm:text-base text-left">Nama Barang</th>
-                <th className="px-4 py-2 border-b text-sm sm:text-base text-left">Kategori</th>
-                <th className="px-4 py-2 border-b text-sm sm:text-base text-left">Jumlah Barang</th>
-                <th className="px-4 py-2 border-b text-sm sm:text-base text-left">Harga Total</th>
-                <th className="px-4 py-2 border-b text-sm sm:text-base text-left">Tanggal Masuk</th>
-                <th className="w-32 px-4 py-2 border-b text-sm sm:text-base text-center sm:text-left">Aksi</th>
+                <th className="w-80 px-4 py-2 border-b dark:border-gray-400 text-sm sm:text-base text-left">Nama Barang</th>
+                <th className="px-4 py-2 border-b dark:border-gray-400 text-sm sm:text-base text-left">Kategori</th>
+                <th className="px-4 py-2 border-b dark:border-gray-400 text-sm sm:text-base text-left">Jumlah Barang</th>
+                <th className="px-4 py-2 border-b dark:border-gray-400 text-sm sm:text-base text-left">Harga Total</th>
+                <th className="px-4 py-2 border-b dark:border-gray-400 text-sm sm:text-base text-left">Tanggal Masuk</th>
+                <th className="w-32 px-4 py-2 border-b dark:border-gray-400 text-sm sm:text-base text-center sm:text-left">Aksi</th>
               </tr>
             </thead>
             <tbody>
               {(Array.isArray(products) ? products : []).map((product, index) => (
-                <tr key={product.id} className={`${index % 2 === 0 ? "bg-gray-50" : "bg-white"} hover:bg-gray-100`}>
-                  <td className="px-4 py-2 border-b text-center">
+                <tr key={product.id} className={`${index % 2 === 0 ? 
+                "bg-gray-50 dark:bg-gray-800" : "bg-white dark:bg-gray-900"
+                } hover:bg-gray-100 dark:hover:bg-gray-700`}>
+                  <td className="px-4 py-2 border-b text-center dark:border-gray-400">
                     <input
                       type="checkbox"
                       checked={selectedProducts.includes(product.id)}
                       onChange={() => toggleSelectProduct(product.id)}
                     />
                   </td>
-                  <td className="px-4 py-2 border-b text-sm sm:text-base">{product.name}</td>
-                  <td className="px-4 py-2 border-b text-sm sm:text-base">{product.category}</td>
-                  <td className="px-4 py-2 border-b text-sm sm:text-base">{product.quantity}</td>
-                  <td className="px-4 py-2 border-b text-sm sm:text-base">
+                  <td className="px-4 py-2 border-b text-sm sm:text-base dark:border-gray-400">{product.name}</td>
+                  <td className="px-4 py-2 border-b text-sm sm:text-base dark:border-gray-400">{product.category}</td>
+                  <td className="px-4 py-2 border-b text-sm sm:text-base dark:border-gray-400">{product.quantity}</td>
+                  <td className="px-4 py-2 border-b text-sm sm:text-base dark:border-gray-400">
                     {formatCurrency(product.price * product.quantity)}
                   </td>
-                  <td className="px-4 py-2 border-b text-sm sm:text-base">{formatDate(product.dateAdded)}</td>
-                  <td className="px-4 py-2 border-b space-x-0 lg:space-x-2">
+                  <td className="px-4 py-2 border-b text-sm sm:text-base dark:border-gray-400">{formatDate(product.dateAdded)}</td>
+                  <td className="px-4 py-2 border-b dark:border-gray-400 space-x-0 lg:space-x-2">
                     <button
                       disabled={isBulkSelectionActive}
                       onClick={() => updateProduct(product)}
-                      className={`w-10 h-10 sm:w-8 sm:h-8 bg-yellow-500 text-white px-2 py-1 rounded-md ${
+                      className={`w-10 h-10 sm:w-8 sm:h-8 bg-yellow-500 bg-yellow-600 text-white px-2 py-1 rounded-md ${
                         isBulkSelectionActive
                           ? "opacity-50 cursor-not-allowed"
-                          : "hover:bg-yellow-600"
+                          : "hover:bg-yellow-700 dark:hover:bg-yellow-800"
                       } transition-all duration-200`}
                     >
                       <Icons.PencilSquare />
@@ -165,10 +167,10 @@ const ProductTable = ({
                     <button
                       disabled={isBulkSelectionActive}
                       onClick={() => openDeleteModal(false, product.id)}
-                      className={`w-10 h-10 sm:w-8 sm:h-8 bg-red-500 text-white px-2 py-1 rounded-md ${
+                      className={`w-10 h-10 sm:w-8 sm:h-8 bg-red-500 dark:bg-red-600 text-white px-2 py-1 rounded-md ${
                         isBulkSelectionActive
                           ? "opacity-50 cursor-not-allowed"
-                          : "hover:bg-red-600"
+                          : "hover:bg-red-600 dark:hover:bg-red-700"
                       } transition-all duration-200`}
                     >
                       <Icons.Trash />

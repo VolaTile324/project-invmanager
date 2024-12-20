@@ -100,16 +100,16 @@ const InventoryPage = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h2 className="text-center text-l sm:text-xl font-bold border-b pb-2">Daftar Inventaris</h2>
+      <h2 className="text-center text-l sm:text-xl font-bold border-b pb-2 dark:border-gray-400">Daftar Inventaris</h2>
       <div className="mt-4">
-        <div className= "flex flex-col sm:flex-row sm:justify-between sm:items-center border-b mb-4">
+        <div className= "flex flex-col sm:flex-row sm:justify-between sm:items-center border-b dark:border-gray-400 mb-4">
           <button
             onClick={() => {
               setEditingProduct(null);
               setIsModalOpen(true);
             }}
             className="bg-blue-500 text-white px-4 py-2 rounded-md mb-4
-            hover:bg-blue-600 transition-all duration-200"
+            hover:bg-blue-600 transition-all duration-200 dark:bg-blue-700 dark:hover:bg-blue-800"
           >
             + Tambah
           </button>
