@@ -1,16 +1,9 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Manrope } from "next/font/google";
 import "./globals.css";
+import { Icons } from "./components/Icons";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const manrope = Manrope({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -19,18 +12,21 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: React.PropsWithChildren<{
   children: React.ReactNode;
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}>
-        <header className="bg-blue-600 text-white p-4">
-          <h1 className="text-2xl">Inventory Management</h1>
+      <body className={`${manrope.className} antialiased flex flex-col min-h-screen`}>
+        <header className="bg-blue-100 text-grey-800 p-4 border-b border-grey-300">
+          <div className="inline-flex items-center space-x-2">
+            <span className="inline"><Icons.ArchiveBox className="size-6 mr-1"/></span>
+            <h1 className="text-2xl font-bold">Inventory Management System</h1>
+          </div>
         </header>
         <main className="flex-grow p-4">{children}</main>
-        <footer className="bg-blue-600 text-white text-center py-4 mt-auto">
-          &copy; 2024 My Inventory System
+        <footer className="text-grey-600 text-center py-4 mt-auto">
+          &copy; 2024 Inventory Management System
         </footer>
       </body>
     </html>

@@ -1,44 +1,82 @@
-import React from 'react';
-import Link from 'next/link';
+// halaman utama
+"use client";
+import React, { useState } from "react";
+import ProductModal from "./components/ProductModal";
+import ProductTable from "../app/components/ProductTable";
+import ProductFilter from "../app/components/ProductFilter";
+import { Product } from "../types/productModel";
 
 const InventoryPage = () => {
-  const products = [
-    { id: 1, name: "Product 1", category: "Category A", quantity: 10, price: 1000, dateAdded: "2024-12-01" },
-    { id: 2, name: "Product 2", category: "Category B", quantity: 5, price: 2000, dateAdded: "2024-12-05" },
-  ];
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+
+  const addProduct = (newProduct: Product) => {
+    setProducts((prevProducts) => [...prevProducts, newProduct]);
+  };
+
+  const updateProduct = (updatedProduct: Product) => {
+    setProducts((prevProducts) =>
+      prevProducts.map((product) => (product.id === updatedProduct.id ? updatedProduct : product))
+    );
+  }
+
+  const handleEditProduct = (product: Product) => {
+    setEditingProduct(product);
+    setIsModalOpen(true);
+  };
+
+  const deleteProduct = (id: number) => {
+    setProducts((prevProducts) => prevProducts.filter((product) => product.id !== id));
+  };
+
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = selectedCategory ? product.category === selectedCategory : true;
+    return matchesSearch && matchesCategory;
+  });
 
   return (
-    <div>
-      <h2 className="text-xl font-bold">Product List</h2>
+    <div className="container mx-auto p-4">
+      <h2 className="text-center text-xl font-bold border-b pb-2">Daftar Inventaris</h2>
       <div className="mt-4">
-        <Link href="/inventory/add">
-          <button className="bg-blue-500 text-white px-4 py-2 rounded-md mb-4">
-            Add New Product
+        <div className= "flex justify-between items-center">
+          <button
+            onClick={() => {
+              setEditingProduct(null);
+              setIsModalOpen(true);
+            }}
+            className="bg-blue-500 text-white px-4 py-2 rounded-md mb-4
+            hover:bg-blue-600 transition-all duration-200"
+          >
+            + Tambah
           </button>
-        </Link>
-        <table className="min-w-full table-auto border-collapse border border-gray-200">
-          <thead>
-            <tr>
-              <th className="px-4 py-2 border-b text-left">Name</th>
-              <th className="px-4 py-2 border-b text-left">Category</th>
-              <th className="px-4 py-2 border-b text-left">Quantity</th>
-              <th className="px-4 py-2 border-b text-left">Price</th>
-              <th className="px-4 py-2 border-b text-left">Date Added</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((product) => (
-              <tr key={product.id}>
-                <td className="px-4 py-2 border-b">{product.name}</td>
-                <td className="px-4 py-2 border-b">{product.category}</td>
-                <td className="px-4 py-2 border-b">{product.quantity}</td>
-                <td className="px-4 py-2 border-b">{product.price}</td>
-                <td className="px-4 py-2 border-b">{product.dateAdded}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+
+          <ProductFilter
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+          />
+        </div>
+
+        <ProductTable
+          products={filteredProducts}
+          updateProduct={handleEditProduct} // bawa handleEditProduct untuk updateProduct
+          deleteProduct={deleteProduct}
+        />
       </div>
+
+      {/* Modal setup */}
+      {isModalOpen && (
+        <ProductModal
+          closeModal={() => setIsModalOpen(false)}
+          saveProduct={editingProduct ? updateProduct : addProduct} // update kalau edit, add kalau tambah produk baru
+          product={editingProduct}
+        />
+      )}
     </div>
   );
 };
