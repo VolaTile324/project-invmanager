@@ -34,14 +34,18 @@ const ProductTable = ({
     }
   };
 
-  const openDeleteModal = (isBulk: boolean) => {
+  const openDeleteModal = (isBulk: boolean, id?: number) => {
     setIsBulkDelete(isBulk);
+    if (!isBulk && id !== undefined) {
+      setSelectedProducts([id]);
+    }
     setIsDeleteModalOpen(true);
   };
 
   const closeDeleteModal = () => {
     setIsDeleteModalOpen(false);
     setIsBulkDelete(false);
+    setSelectedProducts([]);
   };
 
   const confirmDelete = () => {
@@ -51,6 +55,7 @@ const ProductTable = ({
     } else if (selectedProducts.length === 1) {
       deleteProduct(selectedProducts[0]);
     }
+    setSelectedProducts([]);
     closeDeleteModal();
   };
 
@@ -71,6 +76,7 @@ const ProductTable = ({
     return new Intl.NumberFormat("id-ID", {
       style: "currency",
       currency: "IDR",
+      maximumFractionDigits: 0,
     }).format(value);
   };
   
@@ -146,7 +152,7 @@ const ProductTable = ({
                 </button>
                 <button
                   disabled={isBulkSelectionActive}
-                  onClick={() => openDeleteModal(false)}
+                  onClick={() => openDeleteModal(false, product.id)}
                   className={`w-8 h-8 bg-red-500 text-white px-2 py-1 rounded-md ${
                     isBulkSelectionActive
                       ? "opacity-50 cursor-not-allowed"

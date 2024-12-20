@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Dialog } from "@headlessui/react";
 import { Product } from "../../types/productModel";
 import { Category } from "@/types/categoryModel";
+import { useNumberFormat } from "@react-input/number-format";
 
 interface ProductModalProps {
     closeModal: () => void;
@@ -47,6 +48,12 @@ const ProductModal = ({
       [name]: value,
     }));
   };
+  
+  // format display penulisan harga
+  const numberFormat = useNumberFormat({
+    maximumFractionDigits: 0,
+    locales: "id-ID",
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,6 +70,15 @@ const ProductModal = ({
     if (selectedDate > currentDate) {
       alert("Tanggal hanya diperbolehkan sampai hari ini.");
       return;
+    }
+
+    // Validasi harga dan konversi
+    const price = parseInt(formData.price.toString().replace(/\D/g, ""));
+    if (price < 100) {
+      alert("Harga minimal Rp100.");
+      return;
+    } else {
+      formData.price = price;
     }
 
     const updatedProduct = {
@@ -136,16 +152,18 @@ const ProductModal = ({
               <label htmlFor="price" className="block text-sm font-medium">Harga per Unit
                 <span className="ml-1 text-xs font-bold text-red-500">( * Minimal 100 )</span>
               </label>
+              <div className="flex items-center space-x-2">
+                <p className="mt-1 text-gray-500">Rp.</p>
               <input
-                type="number"
+                ref={numberFormat}
                 id="price"
                 name="price"
                 value={formData.price}
                 onChange={handleChange}
                 required
-                min={100}
                 className="mt-1 p-2 border border-gray-300 rounded-md w-full"
               />
+              </div>
             </div>
 
             <div className="mb-4">
