@@ -187,9 +187,9 @@ const ProductTable = ({
       {isDeleteModalOpen && (
         <Dialog open={isDeleteModalOpen} onClose={closeDeleteModal}>
             <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-              <Dialog.Panel className="bg-white p-6 rounded-lg shadow-lg w-96">
+              <Dialog.Panel className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-96">
                 <h2 className="text-xl font-bold mb-4">Konfirmasi Hapus</h2>
-                <p className="text-gray-700 mb-6">
+                <p className="text-gray-700 dark:text-gray-300 mb-6">
                   Apakah Anda yakin ingin menghapus{" "}
                   {isBulkDelete ? `${selectedProducts.length} barang terpilih`: "barang ini"}
                   ? Data yang dihapus tidak dapat dikembalikan.
@@ -198,14 +198,14 @@ const ProductTable = ({
                   <button
                     onClick={closeDeleteModal}
                     className="bg-gray-300 text-gray-900 px-4 py-2 rounded-md
-                    hover:bg-gray-400 transition-all duration-200"
+                    hover:bg-gray-400 transition-all duration-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
                   >
                     Batalkan
                   </button>
                   <button
                     onClick={confirmDelete}
                     className="bg-red-500 text-white px-4 py-2 rounded-md
-                    hover:bg-red-600 transition-all duration-200"
+                    hover:bg-red-600 transition-all duration-200 dark:bg-red-600 dark:hover:bg-red-700"
                   >
                     Hapus
                   </button>

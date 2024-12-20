@@ -131,7 +131,7 @@ const ProductModal = ({
   return (
     <Dialog open={true} onClose={closeModal}>
       <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-        <Dialog.Panel className="bg-white p-6 rounded-lg shadow-lg w-96">
+        <Dialog.Panel className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-96">
           <h2 className="text-center text-xl font-bold mb-4">{product ? "Edit Barang" : "Tambah Barang"}</h2>
           <form onSubmit={handleSubmit}>
             {!product && (
@@ -150,7 +150,7 @@ const ProductModal = ({
             <div className="mb-4">
               <label htmlFor="name" className="block text-sm font-medium">
                 Nama Barang
-                <span className="ml-1 text-xs font-bold text-red-500">( * Wajib diisi )</span>
+                <span className="ml-1 text-xs font-bold text-red-500 dark:text-red-400">( * Wajib diisi )</span>
               </label>
               <input
                 type="text"
@@ -159,7 +159,7 @@ const ProductModal = ({
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                className="mt-1 p-2 border border-gray-300 rounded-md w-full dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200"
               />
             </div>
 
@@ -171,10 +171,10 @@ const ProductModal = ({
                 value={formData.category}
                 onChange={handleChange}
                 required
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                className="mt-1 p-2 border border-gray-300 rounded-md w-full dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200"
               >
                 {Object.values(Category).map((category) => (
-                  <option key={category} value={category}>
+                  <option key={category} value={category} className="dark:bg-gray-800 dark:text-gray-200">
                     {category}
                   </option>
                 ))}
@@ -184,7 +184,7 @@ const ProductModal = ({
             <div className="mb-4">
               <label htmlFor="quantity" className="block text-sm font-medium">
                 Jumlah Barang
-                <span className="ml-1 text-xs font-bold text-red-500">( * Minimal 1 )</span>
+                <span className="ml-1 text-xs font-bold text-red-500 dark:text-red-400">( * Minimal 1 )</span>
               </label>
               <input
                 type="number"
@@ -194,16 +194,16 @@ const ProductModal = ({
                 onChange={handleChange}
                 required
                 min={1}
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                className="mt-1 p-2 border border-gray-300 rounded-md w-full dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200"
               />
             </div>
 
             <div className="mb-4">
               <label htmlFor="price" className="block text-sm font-medium">Harga per Unit
-                <span className="ml-1 text-xs font-bold text-red-500">( * Minimal 100 )</span>
+                <span className="ml-1 text-xs font-bold text-red-500 dark:text-red-400">( * Minimal 100 )</span>
               </label>
               <div className="flex items-center space-x-2">
-                <p className="mt-1 text-gray-500">Rp.</p>
+                <p className="mt-1 text-gray-500 dark:text-gray-300">Rp.</p>
               <input
                 ref={numberFormat}
                 id="price"
@@ -211,7 +211,7 @@ const ProductModal = ({
                 value={formData.price}
                 onChange={handleChange}
                 required
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                className="mt-1 p-2 border border-gray-300 rounded-md w-full dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200"
               />
               </div>
             </div>
@@ -225,7 +225,7 @@ const ProductModal = ({
                 value={formData.dateAdded}
                 onChange={handleChange}
                 required
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                className="mt-1 p-2 border border-gray-300 rounded-md w-full dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200"
               />
             </div>
 
@@ -233,14 +233,14 @@ const ProductModal = ({
               <button
                 onClick={closeModal}
                 className="bg-gray-300 text-gray-900 px-4 py-2 rounded-md
-                hover:bg-gray-400 transition-all duration-200"
+                hover:bg-gray-400 transition-all duration-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
               >
                 Batalkan
               </button>
               <button
                 type="submit"
                 className="bg-blue-500 text-white px-4 py-2 rounded-md
-                hover:bg-blue-600 transition-all duration-200"
+                hover:bg-blue-600 transition-all duration-200 dark:bg-blue-600 dark:hover:bg-blue-700"
               >
                 {product ? "Update Produk" : "Tambah Produk"}
               </button>
