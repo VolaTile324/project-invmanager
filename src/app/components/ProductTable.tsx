@@ -60,17 +60,23 @@ const ProductTable = ({
     closeDeleteModal();
   };
 
-  const handleExportCSV = () => {
-    const csv = products.map((product) => {
-      return `${product.id},${product.name},${product.category},${product.quantity},${product.price},${formatDate(product.dateAdded)}`;
-    });
-    const csvData = csv.join("\n");
-    const blob = new Blob([csvData], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `products-${new Date().toISOString().split("T")[0]}.csv`;
-    a.click();
+  const handleExportCSV = async () => {
+    try {
+      const response = await fetch("/api/products/export");
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `products-${new Date().toISOString().split("T")[0]}.csv`;
+        link.click();
+        window.URL.revokeObjectURL(url);
+      } else {
+        console.error("Failed to export products");
+      }
+    } catch (error) {
+      console.error("Error exporting products:", error);
+    }
   };
 
   const formatCurrency = (value: number) => {

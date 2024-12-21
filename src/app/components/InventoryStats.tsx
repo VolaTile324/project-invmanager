@@ -5,12 +5,12 @@ const InventoryStats = ({ totalToday, totalAllTime } : { totalToday: number; tot
 return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-6">
       <StatsBox
-        title="Total Products Today"
+        title="Total Barang Hari ini"
         value={totalToday}
         icon={<Icons.CalendarDays className="w-12 h-12" />}
       />
       <StatsBox
-        title="Total Products All Time"
+        title="Total Barang"
         value={totalAllTime}
         icon={<Icons.ArchiveBoxArrowDown className="w-12 h-12" />}
       />
