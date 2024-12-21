@@ -97,7 +97,7 @@ const ProductTable = ({
               hover:bg-green-600 dark:hover:bg-green-800 transition-all duration-200 w-full sm:w-auto`}
             style={{ visibility: products.length > 0 ? "visible" : "hidden" }}
             >
-            Export File CSV
+            Export ke CSV
           </button>
         <button
           disabled={selectedProducts.length === 0}
@@ -106,7 +106,7 @@ const ProductTable = ({
             hover:bg-red-600 dark:hover:bg-red-700 transition-all duration-200 w-full sm:w-auto`}
             style={{ visibility: selectedProducts.length > 0 ? "visible" : "hidden" }}
         >
-          Hapus Terpilih
+          Hapus Pilihan
         </button>
       </div>
 

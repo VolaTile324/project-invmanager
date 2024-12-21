@@ -20,9 +20,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       filter.category = selectedCategory;
     }
 
-    const products = await Product.find(filter);
+    const pageNumber = parseInt(req.query.page as string, 10) || 1;
+    const pageLimit = parseInt(req.query.limit as string, 10) || 10;
 
-    res.status(200).json(products);
+    const totalItems = await Product.countDocuments(filter);
+
+    const products = await Product.find(filter).skip((pageNumber - 1) * pageLimit).limit(pageLimit);
+
+    res.status(200).json({products, totalItems});
   } catch (error) {
     console.error("Error fetching products:", error);
     res.status(500).json({ message: "Failed to fetch products" });

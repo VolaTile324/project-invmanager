@@ -5,6 +5,7 @@ import { Product } from "../types/productType";
 import ProductModal from "./components/ProductModal";
 import ProductTable from "../app/components/ProductTable";
 import ProductFilter from "../app/components/ProductFilter";
+import Pagination from "./components/Pagination";
 import InventoryStats from "./components/InventoryStats";
 
 const InventoryPage = () => {
@@ -13,7 +14,12 @@ const InventoryPage = () => {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
   const [stats, setStats] = useState({ totalToday: 0, totalAllTime: 0 });
+
+  const itemsPerPage = 10;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   const fetchProducts = useCallback(async () => {
     try {
@@ -26,12 +32,17 @@ const InventoryPage = () => {
         queryParams.append("selectedCategory", selectedCategory);
       }
 
+      queryParams.append("page", currentPage.toString());
+      queryParams.append("limit", itemsPerPage.toString());
+
       const productResponse = await fetch(`/api/products?${queryParams.toString()}`);
       const data = await productResponse.json();
-      if (Array.isArray(data)) {
-        setProducts(data);
+      if (Array.isArray(data.products)) {
+        setProducts(data.products);
+        setTotalItems(data.totalItems);
       } else {
         setProducts([]);  // fallback to empty array if data is not an array
+        setTotalItems(0);
       }
 
       const statResponse = await fetch("/api/products/stats");
@@ -42,11 +53,15 @@ const InventoryPage = () => {
       console.error("Error fetching products:", error);
       setProducts([]);  // fallback to empty array on error
     }
-  }, [searchQuery, selectedCategory]);
+  }, [searchQuery, selectedCategory, currentPage]);
   
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]); // it's re-run time, ketika searchQuery atau selectedCategory berubah
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedCategory]); // reset currentPage ketika searchQuery atau selectedCategory berubah
 
   const handleSaveProduct = async (product: Product) => {
     if (product.id) {
@@ -76,6 +91,7 @@ const InventoryPage = () => {
       console.error("Error deleting product:", error);
     }
 
+    setCurrentPage(1);
     await fetchProducts();
   };
 
@@ -94,9 +110,14 @@ const InventoryPage = () => {
     } catch (error) {
       console.error("Error deleting bulk products:", error);
     }
-
+    
+    setCurrentPage(1);
     await fetchProducts();
   };
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+  }
 
   return (
     <div className="container mx-auto p-4">
@@ -127,6 +148,12 @@ const InventoryPage = () => {
           updateProduct={handleEditProduct} // bawa handleEditProduct untuk updateProduct
           deleteProduct={deleteProduct}
           deleteBulkProducts={deleteBulkProducts}
+        />
+
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
         />
       </div>
 
