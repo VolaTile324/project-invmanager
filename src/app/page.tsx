@@ -119,6 +119,11 @@ const InventoryPage = () => {
     setCurrentPage(newPage);
   }
 
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+    setCurrentPage(1);
+  }
+
   return (
     <div className="container mx-auto p-4">
       <h2 className="text-center text-l sm:text-xl font-bold border-b pb-2 dark:border-gray-400">Daftar Inventaris</h2>
@@ -139,7 +144,7 @@ const InventoryPage = () => {
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
             selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
+            setSelectedCategory={handleCategoryChange}
           />
         </div>
 
