@@ -26,8 +26,8 @@ export default function RootLayout({
           </div>
         </header>
         <main className="flex-grow p-4">{children}</main>
-        <footer className="text-grey-600 text-center py-4 mt-auto">
-          &copy; 2024 Inventory Management System
+        <footer className="text-gray-600 text-center py-4 mt-auto">
+          &copy; {new Date().getFullYear()} Inventory Management System
         </footer>
       </body>
     </html>
